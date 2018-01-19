@@ -12,13 +12,15 @@ import { HeaderComponent } from './header/header.component';
 import { AboutComponent } from './about/about.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { routes }from './app.routes';
+import { EmployeeComponent } from './employee/employee.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     ProductsComponent,
     HeaderComponent,
-    AboutComponent
+    AboutComponent,
+    EmployeeComponent
   ],
   imports: [
     BrowserModule,
