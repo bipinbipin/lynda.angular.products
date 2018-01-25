@@ -1,0 +1,72 @@
+  <!--IF NO ID SELECTED DONT SHOW ANYTHING-->
+  <ng-container *ngIf="this.id">  
+
+
+    <div id="tab-div" class="row">
+      <div class="column">
+        <button (click)="showtab='perf'" class="tab-btn">Performance Review</button>
+      </div>
+      <div class="column">
+        <button (click)="showtab='pto'" class="tab-btn">PTO Tracker</button>
+      </div>
+      <div class="column">
+        <button (click)="showtab='sick'" class="tab-btn">Sick Days</button>
+      </div>
+      <div class="column">
+        <button (click)="showtab='writeup'" class="tab-btn">Write Up</button>
+      </div>
+    </div>
+
+<div [ngSwitch]="showtab">
+
+    <!--PERFORMANCE REVIEW SECTION-->
+    <ng-template [ngSwitchCase]= "'perf'">
+    <div class="row">
+      <div class="column medium-6 large-8" id="event-new">
+
+        <h1>Employee ID: {{ this.id }}</h1>
+        <form #form="ngForm" (ngSubmit)="addEvent(form.value)">
+          <input type="text" placeholder="Review Title" name="title" [(ngModel)]="model.title">
+          <textarea placeholder="Review Notes.." name="notes" [(ngModel)]="model.notes" rows="3"></textarea>
+          <input type="date" name="occurrence" [(ngModel)]="model.occurrence" >
+
+          <button id="btn" type="submit">Save Review</button>
+        </form>
+      </div>
+      <div class="column medium-3 large-4" id="event-list">
+        <h1>Previous Reviews</h1>
+        <ul>
+          <li *ngFor="let event of events" (click)="editEvent(event.id)">{{ event.title }} 
+            <p>{{ event.occurrence }}</p>
+          </li>
+        </ul>
+
+      </div>
+    </div>
+    </ng-template>
+
+    <!--PTO SECTION-->
+    <ng-template [ngSwitchCase]= "'pto'">
+
+      <p>PTO</p>
+
+    </ng-template>
+
+    <!--SICK DAYS SECTION-->
+    <ng-template [ngSwitchCase]= "'sick'">
+
+      <p>sick days</p>
+
+    </ng-template>
+
+    <!--WRITE UP SECTION-->
+    <ng-template [ngSwitchCase]= "'writeup'">
+
+      <p>write up</p>
+
+    </ng-template>
+
+
+</div>
+
+  </ng-container>

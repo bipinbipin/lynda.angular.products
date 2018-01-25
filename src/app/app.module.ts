@@ -3,6 +3,7 @@ import { FormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
 import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
+import {HttpClient, HttpClientModule} from "@angular/common/http";
 
 
 
@@ -13,6 +14,8 @@ import { AboutComponent } from './about/about.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { routes }from './app.routes';
 import { EmployeeComponent } from './employee/employee.component';
+import { EmployeeEventsComponent } from './employee-events/employee-events.component';
+import { EventService } from './employee-events/employee-event.service';
 
 @NgModule({
   declarations: [
@@ -20,9 +23,11 @@ import { EmployeeComponent } from './employee/employee.component';
     ProductsComponent,
     HeaderComponent,
     AboutComponent,
-    EmployeeComponent
+    EmployeeComponent,
+    EmployeeEventsComponent
   ],
   imports: [
+    HttpClientModule,
     BrowserModule,
     RouterModule,
     FormsModule,
@@ -30,7 +35,10 @@ import { EmployeeComponent } from './employee/employee.component';
     BrowserAnimationsModule,
     routes
   ],
-  providers: [],
+  providers: [
+    HttpClient,
+    EventService
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
