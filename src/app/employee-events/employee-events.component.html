@@ -2,6 +2,7 @@
   <ng-container *ngIf="this.id">  
 
 
+    <h1>Employee ID: {{ this.id }}</h1>
     <div id="tab-div" class="row">
       <div class="column">
         <button (click)="showtab='perf'" class="tab-btn">Performance Review</button>
@@ -24,17 +25,34 @@
     <div class="row">
       <div class="column medium-6 large-8" id="event-new">
 
-        <h1>Employee ID: {{ this.id }}</h1>
+        <h1>{{ this.update ? 'Update Existing Review' : 'Create New Review' }}</h1>
+        <hr>
         <form #form="ngForm" (ngSubmit)="addEvent(form.value)">
-          <input type="text" placeholder="Review Title" name="title" [(ngModel)]="model.title">
-          <textarea placeholder="Review Notes.." name="notes" [(ngModel)]="model.notes" rows="3"></textarea>
+          <input type="text" placeholder="Review Title..." name="title" [(ngModel)]="model.title">
+          <textarea placeholder="Review Notes..." name="notes" [(ngModel)]="model.notes" rows="13"></textarea>
           <input type="date" name="occurrence" [(ngModel)]="model.occurrence" >
+          <div *ngIf="this.update; then thenBlock else elseBlock"></div>
 
-          <button id="btn" type="submit">Save Review</button>
+            <ng-template #thenBlock>
+              <div class="row">
+                <div class="column">
+                  <button id="btn_cancel" type="button" (click)="clearForm()">Cancel</button>
+                </div>
+                <div class="column">
+                  <button id="btn_update" type="submit">Update Review</button>
+                </div>
+              </div>
+            </ng-template>
+
+            <ng-template #elseBlock>
+              <button id="btn" type="submit">Save Review</button>
+            </ng-template>
+          
         </form>
       </div>
       <div class="column medium-3 large-4" id="event-list">
         <h1>Previous Reviews</h1>
+        <hr>
         <ul>
           <li *ngFor="let event of events" (click)="editEvent(event.id)">{{ event.title }} 
             <p>{{ event.occurrence }}</p>

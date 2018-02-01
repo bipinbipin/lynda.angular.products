@@ -16,6 +16,10 @@ import { routes }from './app.routes';
 import { EmployeeComponent } from './employee/employee.component';
 import { EmployeeEventsComponent } from './employee-events/employee-events.component';
 import { EventService } from './employee-events/employee-event.service';
+import { FieldEngineerComponent } from './field-engineer/field-engineer.component';
+import { FieldEngineerService } from "./field-engineer/field-engineer.service";
+import { NglModule } from 'ng-lightning/ng-lightning';
+import { ClarityModule } from "@clr/angular";
 
 @NgModule({
   declarations: [
@@ -24,7 +28,8 @@ import { EventService } from './employee-events/employee-event.service';
     HeaderComponent,
     AboutComponent,
     EmployeeComponent,
-    EmployeeEventsComponent
+    EmployeeEventsComponent,
+    FieldEngineerComponent
   ],
   imports: [
     HttpClientModule,
@@ -33,11 +38,14 @@ import { EventService } from './employee-events/employee-event.service';
     FormsModule,
     HttpModule,
     BrowserAnimationsModule,
-    routes
+    routes,
+    NglModule.forRoot()
+    // ClarityModule
   ],
   providers: [
     HttpClient,
-    EventService
+    EventService,
+    FieldEngineerService
   ],
   bootstrap: [AppComponent]
 })

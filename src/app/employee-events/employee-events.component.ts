@@ -15,10 +15,12 @@ export class EmployeeEventsComponent implements OnInit {
   paramsSub: any;
   update: boolean = false;
   eventEnum = "PERFORMANCE_REVIEW";
-  emptyEmployeeEvent = new EmployeeEvent(null, null, currentDate.toISOString().substring(0,10), this.eventEnum, "... Review", "notes...");
+  emptyEmployeeEvent = new EmployeeEvent(null, null, currentDate.toISOString().substring(0,10), this.eventEnum, "", "");
   model = this.emptyEmployeeEvent;
 
+  
   events: EmployeeEvent[];
+  
 
   constructor(private activatedRoute: ActivatedRoute,
               private eventService: EventService) {
@@ -35,34 +37,23 @@ export class EmployeeEventsComponent implements OnInit {
         this.id = +params['id'];
             // IF THE ID CHANGES GET THE EVENTS
 
-            // INITIALIZE THE EVENT LIST
-            this.eventService.getAllEventsByEmployee(this.id)
-              .subscribe(
-                (events: any[]) => {
-                  this.events = events;
-                }, 
-                (error) => console.log(error)
-              )
+            // CLEAR THE FORM
+            this.clearForm();
 
-            // SUBSCRIBE TO THE EVENT EMIITER STREAM
-            this.eventService.onEventAdded.subscribe(
-              (employeeEvent: EmployeeEvent) => {
-                this.events.push(employeeEvent);
-              }
-            )
+            this.initializeAndSubscribeToEventList();
+
       }
     )
 
-
-
+    
   }
 
   addEvent(value:any) {
     
-    console.log("id:" + this.model.id + " - ver:" + this.model.version);
+    // console.log("id:" + this.model.id + " - ver:" + this.model.version);
 
     // POST THE NEW EVENT TO THE BACKEND
-    this.eventService.saveEmployeeEvent(
+    let observable = this.eventService.saveEmployeeEvent(
       this.id, 
       new EmployeeEvent(this.model.id, 
                         this.model.version, 
@@ -72,16 +63,71 @@ export class EmployeeEventsComponent implements OnInit {
                         value.notes)
     )
 
+    if(observable) {
+      observable.subscribe(
+                (employeeEvent: any) => {
+                    // console.log("REINITIZE - Employee ID: " + employeeId )
+                    // REFETCH EVENTS BY EMPLOYEE
+                    // this.getAllEventsByEmployee(employeeId);
+                },
+                (error) => console.log(error),
+                () => {
+                    // this.getAllEventsByEmployee(employeeId)
+                    console.log("PROMISE COMPLETED")
+                    this.initializeAndSubscribeToEventList();
+                }
+            )
+    }
     // RESET THE MODEL I.E. CLEAR THE INPUTS
-    this.model = new EmployeeEvent(null, null, currentDate.toISOString().substring(0,10), this.eventEnum, "... Review", "notes...");
+    this.clearForm();
+    
   }
 
   editEvent(id) {
+    this.update = true;
     this.eventService.getEventById(id)
       .subscribe(
         (event: any) => {
           this.model = event;
-          console.log(event);
+          // console.log(event);
+        }
+      )
+  }
+
+  clearForm() {
+    // RESET THE MODEL I.E. CLEAR THE INPUTS
+    this.model = new EmployeeEvent(null, null, currentDate.toISOString().substring(0,10), this.eventEnum, "", "");
+
+    this.update = false;
+  }
+
+  initializeAndSubscribeToEventList() {
+      console.log("RESUBSCRIBE TO EVENTS")
+      this.events = [];
+
+      // INITIALIZE THE EVENT LIST
+      this.eventService.getAllEventsByEmployee(this.id)
+        .subscribe(
+          (events: any[]) => {
+            this.events = events;
+            // console.log(this.events);
+          }, 
+          (error) => console.log(error)
+        )
+
+
+      // let getEventFunc = (data: any[]) => {
+      //       // console.log(data);
+      //       this.events = data; 
+      //   };
+      // this.eventService.getEventsByEmployee_Sub(getEventFunc, this.id);
+      // console.log(this.events);
+
+
+      // SUBSCRIBE TO THE EVENT EMIITER STREAM
+      this.eventService.onEventAdded.subscribe(
+        (employeeEvent: EmployeeEvent) => {
+          this.events.push(employeeEvent);
         }
       )
   }
